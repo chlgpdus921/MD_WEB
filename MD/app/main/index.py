@@ -16,7 +16,7 @@ def loginResult():
         print(password)
 
         try:
-            if id == '**' and password == '**':
+            if id == 'admin' and password == '12345':
                 return render_template('/main/index.html')
             else:
                return render_template('/main/login.html', LoginState = "NO")
