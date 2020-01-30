@@ -19,6 +19,7 @@
     <!-- AdminLTE Skins. Choose a skin from the css/skins
          folder instead of downloading all of them to reduce the load. -->
     <link rel="stylesheet" href="../static/css/_all-skins.min.css">
+    <link rel="stylesheet" href="../static/css/morris.css">
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -255,12 +256,18 @@
         <!-- Main content -->
         <section class="content">
             <div class="col-md-6">
-                <div class="box box-primary">
-                    <div class="box-body">
-                        <h3>Mechanic Doctor Usage</h3>
-                        <p>Welcome to admin page :)</p>
-                    </div>
-                </div>
+             <!-- LINE CHART -->
+          <div class="box box-info">
+            <div class="box-header with-border">
+               <i class="fa fa-bar-chart-o"></i><h3 class="box-title">User total</h3>
+            </div>
+
+            <div class="box-body chart-responsive">
+              <div class="chart" id="line-chart" style="height: 300px;"></div>
+            </div>
+            <!-- /.box-body -->
+          </div>
+          <!-- /.box -->
 
                 <!-- Bar chart -->
                 <div class="box box-primary">
@@ -280,15 +287,14 @@
             <div class="col-md-6">
                 <div class="box box-primary">
                     <div class="box-header with-border">
-                        <i class="fa fa-bar-chart-o"></i>
+                        <i class="fa fa-pie-chart"></i>
                         <h3 class="box-title">Donut Chart</h3>
                     </div>
                     <div class="box-body">
                         <div id="donut-chart" style="height: 300px;"></div>
                         <p><i class="fa fa-square" style="color:#56a0f0"></i> bad ball joint</p>
                         <p><i class="fa fa-square" style="color:#0073b7"></i> bad brake pad</p>
-                        <p><i class="fa fa-square" style="color:#56c4f0"></i> engine running without oil+engine seizing
-                            up</p>
+                        <p><i class="fa fa-square" style="color:#56c4f0"></i> engine running without oil+engine seizing up</p>
                         <p><i class="fa fa-square" style="color:#414c9a"></i> failing water pump</p>
                         <p><i class="fa fa-square" style="color:#6756f0"></i> hole in muffler</p>
                         <p><i class="fa fa-square" style="color:#9f56f0"></i> normal</p>
@@ -300,7 +306,6 @@
             <!-- /.col -->
         </section>
         <!-- /.content -->
-
     </div>
     <!-- /.content-wrapper -->
     <footer class="main-footer">
@@ -425,6 +430,118 @@
 <!-- FLOT CATEGORIES PLUGIN - Used to draw bar charts -->
 <script src="../static/js/jquery.flot.categories.js"></script>
 <!-- Page script -->
-<script src="../static/js/usage.js"></script>
+<script src="../static/js/raphael.min.js"></script>
+<script src="../static/js/morris.min.js"></script>
+<!--<script src="../static/js/usage.js"></script>-->
+
+<script>
+ $(function () {
+         "use strict";
+
+    // LINE CHART
+    var line = new Morris.Line({
+      element: 'line-chart',
+      resize: true,
+      data: [
+        {y: '2020-01-23', item1: 5},
+        {y: '2020-01-24', item1: 10},
+        {y: '2020-01-25', item1: 20},
+        {y: '2020-01-26', item1: 30},
+        {y: '2020-01-27', item1: 5},
+        {y: '2020-01-28', item1: 10},
+        {y: '2020-01-29', item1: 3}
+      ],
+      xkey: 'y',
+      ykeys: ['item1'],
+      labels: ['usage'],
+      lineColors: ['#3c8dbc'],
+      hideHover: 'auto'
+    });
+
+     /*
+     * BAR CHART
+     * ---------
+     */
+
+    var receivedData = {{usage}};
+
+    var bar_data = {
+      data : [['bad ball joint', receivedData[0]],
+      ['bad brake pad', receivedData[1]],
+      ['engine running without oil+engine seizing up', receivedData[2]],
+      ['failing water pump', receivedData[3]],
+      ['hole in muffler', receivedData[4]],
+      ['normal', receivedData[5]]],
+      color: '#3c8dbc'
+    }
+    $.plot('#bar-chart', [bar_data], {
+      grid  : {
+        borderWidth: 1,
+        borderColor: '#f3f3f3',
+        tickColor  : '#f3f3f3'
+      },
+      series: {
+        bars: {
+          show    : true,
+          barWidth: 0.5,
+          align   : 'center'
+        }
+      },
+      xaxis : {
+        mode      : 'categories',
+        tickLength: 0
+      }
+    })
+    /* END BAR CHART */
+
+    /*
+     * DONUT CHART
+     * -----------
+     */
+    var donutData = [
+      { label: '', data: receivedData[0], color: '#56a0f0' },
+      { label: '', data: receivedData[1], color: '#0073b7' },
+      { label: '', data: receivedData[2], color: '#56c4f0' },
+      { label: '', data: receivedData[3], color: '#414c9a' },
+      { label: '', data: receivedData[4], color: '#6756f0' },
+      { label: '', data: receivedData[5], color: '#9f56f0' }
+    ]
+    $.plot('#donut-chart', donutData, {
+      series: {
+        pie: {
+          show       : true,
+          radius     : 1,
+          innerRadius: 0.5,
+          label      : {
+            show     : true,
+            radius   : 2 / 3,
+            formatter: labelFormatter,
+            threshold: 0.1
+          }
+
+        }
+      },
+      legend: {
+        show: false
+      }
+    })
+    /*
+     * END DONUT CHART
+     */
+
+  })
+
+  /*
+   * Custom Label formatter
+   * ----------------------
+   */
+  function labelFormatter(label, series) {
+    return '<div style="font-size:13px; text-align:center; padding:2px; color: #fff; font-weight: 600;">'
+      + label
+      + '<br>'
+      + Math.round(series.percent) + '%</div>'
+  }
+
+</script>
 </body>
 </html>
