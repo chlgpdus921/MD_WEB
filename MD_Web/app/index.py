@@ -3,7 +3,8 @@ from flask import Flask
 from collections import Counter
 import pymysql
 
-db = pymysql.connect("13.59.126.198", "root", "peoplespace5", "md_db")
+db = pymysql.connect("52.14.78.174", "root", "peoplespace5", "md_db")
+#db = pymysql.connect("localhost", "root", "temp", "md_db")
 
 app = Flask(__name__)
 
@@ -11,7 +12,6 @@ app = Flask(__name__)
 @app.route('/login')
 def index(state=None):
     return render_template('/login.html', LoginState="None")
-
 
 @app.route('/main', methods=['POST', 'GET'])
 def loginResult():
