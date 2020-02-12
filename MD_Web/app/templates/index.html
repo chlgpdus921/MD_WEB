@@ -246,7 +246,17 @@
             <h1>
                 Mechanic Doctor
                 <small>Mechanic Doctor</small>
+                <small id="time-result"></small>
             </h1>
+
+  <script type="text/javascript">
+        var d = new Date();
+        var currentDate = d.getFullYear() + "-"+ ( d.getMonth() + 1 ) + "-" + d.getDate();
+        var currentTime = d.getHours() + ":" + d.getMinutes() + ":" + d.getSeconds();
+        var result = document.getElementById("time-result");
+        result.innerHTML = currentDate +" "+currentTime + " Usage";
+    </script>
+
             <ol class="breadcrumb">
                 <li><a href="#"><i class="fa fa-dashboard"></i> Level</a></li>
                 <li class="active">Here</li>
@@ -293,11 +303,11 @@
                     </div>
                     <div class="box-body">
                         <div id="donut-chart" style="height: 300px;"></div>
-                        <p><i class="fa fa-square" style="color:#56a0f0"></i> bad ball joint</p>
-                        <p><i class="fa fa-square" style="color:#0073b7"></i> bad brake pad</p>
-                        <p><i class="fa fa-square" style="color:#56c4f0"></i> engine seizing up</p>
-                        <p><i class="fa fa-square" style="color:#414c9a"></i> failing water pump</p>
-                        <p><i class="fa fa-square" style="color:#6756f0"></i> hole in muffler</p>
+                        <p><i class="fa fa-square" style="color:#56a0f0"></i> bad_ball_joint</p>
+                        <p><i class="fa fa-square" style="color:#0073b7"></i> bad_brake_pad</p>
+                        <p><i class="fa fa-square" style="color:#56c4f0"></i> engine_seizing_up</p>
+                        <p><i class="fa fa-square" style="color:#414c9a"></i> failing_water_pump</p>
+                        <p><i class="fa fa-square" style="color:#6756f0"></i> hole_in_muffler</p>
                         <p><i class="fa fa-square" style="color:#9f56f0"></i> normal</p>
                     </div>
                     <!-- /.box-body-->
@@ -439,19 +449,7 @@
  $(function () {
          "use strict";
     // LINE CHART
-    var newDate = new Date();
-    var yyyy = newDate.getFullYear();
-    var mm = newDate.getMonth()+1;
-    var dd = newDate.getDate();
-
-    if(mm < 10){
-	    mm = "0"+mm;
-    }
-    if(dd < 10){
-	    dd = "0"+dd;
-    }
-
-    var today = yyyy + "-" + mm + "-" + dd;
+    var today = new Date();
     var day1 = new Date();
 
     var dateCnt = {{dateCnt}};
@@ -460,13 +458,13 @@
       element: 'line-chart',
       resize: true,
       data: [
-        {y: today, item1: dateCnt[6]},
-        {y: getFormatDateBefore(day1,1), item1: dateCnt[5]},
-        {y: getFormatDateBefore(day1,2), item1: dateCnt[4]},
+        {y: getFormatDateBefore(day1,0), item1: dateCnt[0]},
+        {y: getFormatDateBefore(day1,1), item1: dateCnt[1]},
+        {y: getFormatDateBefore(day1,2), item1: dateCnt[2]},
         {y: getFormatDateBefore(day1,3), item1: dateCnt[3]},
-        {y: getFormatDateBefore(day1,4), item1: dateCnt[2]},
-        {y: getFormatDateBefore(day1,5), item1: dateCnt[1]},
-        {y: getFormatDateBefore(day1,6), item1: dateCnt[0]}
+        {y: getFormatDateBefore(day1,4), item1: dateCnt[4]},
+        {y: getFormatDateBefore(day1,5), item1: dateCnt[5]},
+        {y: getFormatDateBefore(day1,6), item1: dateCnt[6]}
       ],
       xkey: 'y',
       ykeys: ['item1'],
@@ -482,8 +480,8 @@
 
     var causeTotal = {{causeTotal}};
     var bar_data = {
-      data : [['bad_brake_pad', causeTotal[0]],
-      ['bad_ball_joint', causeTotal[1]],
+      data : [['bad_ball_joint', causeTotal[0]],
+      ['bad_brake_pad', causeTotal[1]],
       ['engine_seizing_up', causeTotal[2]],
       ['failing_water_pump', causeTotal[3]],
       ['hole_in_muffler', causeTotal[4]],

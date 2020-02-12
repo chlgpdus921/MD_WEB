@@ -4,7 +4,7 @@ from collections import Counter
 import pymysql
 from datetime import datetime, timedelta
 
-db = pymysql.connect("52.14.78.174", "root", "peoplespace5", "md_db")
+#db = pymysql.connect("52.14.78.174", "root", "peoplespace5", "md_db")
 #db = pymysql.connect("localhost", "root", "temp", "md_db")
 
 app = Flask(__name__)
@@ -24,17 +24,25 @@ def loginResult():
 
         try:
             if id == 'admin' and password == '12345':
-                return render_template('/index.html', usage=usageResult(), dateCnt = dateCntResult(),
-                                     causeTotal = causeCnt())
+                data = usageResult()
+                return render_template('/index.html', usage=usageResult(), dateCnt=data[0],
+                                       causeTotal=data[1])
             else:
                 return render_template('/login.html', LoginState="NO")
 
         except:
             return 'You are not registered'
-dateList = []
-dateCnt = [0,0,0,0,0,0,0]
-causeTotal = [0,0,0,0,0,0]
+    else:
+        data = usageResult()
+        return render_template('/index.html', usage=usageResult(), dateCnt=data[0],
+                               causeTotal=data[1])
+
 def usageResult():
+    dateList = []
+    dateCnt = [0, 0, 0, 0, 0, 0, 0]
+    causeTotal = [0, 0, 0, 0, 0, 0]
+
+    db = pymysql.connect("52.14.78.174", "root", "peoplespace5", "md_db")
     totalusage = [10,20,30,20,10,30]
     cursor = db.cursor()
     sql = "SELECT * FROM application"
@@ -52,8 +60,9 @@ def usageResult():
     peopleUsage = []
     cause =[]
     for row in sqlresult:
-        peopleUsage.append(row[1])
-        cause.append(row[2])
+        peopleUsage.append(row[1]) #날짜저장
+        cause.append(row[2]) #원인저장
+
 
     peopleUsageCnt = Counter(peopleUsage)
     causeCnt = Counter(cause)
@@ -61,7 +70,7 @@ def usageResult():
     for key in peopleUsageCnt:
         if str(key)[:10] in dateList:
             location = dateList.index(str(key)[:10])
-            dateCnt[location] = peopleUsageCnt[key]
+            dateCnt[location] = dateCnt[location] + peopleUsageCnt[key]
         print(str(key)[:10], peopleUsageCnt[key])
     print(dateCnt)
 
@@ -76,13 +85,8 @@ def usageResult():
     print(causeTotal)
 
     print(dateCnt)
-    print(causeTotal)
-    return dateCnt
 
-def dateCntResult():
-    return dateCnt
-def causeCnt():
-    return causeTotal
+    return [dateCnt,causeTotal]
 
 
 if __name__ == '__main__':
