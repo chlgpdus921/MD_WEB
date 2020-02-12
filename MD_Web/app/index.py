@@ -25,8 +25,7 @@ def loginResult():
         try:
             if id == 'admin' and password == '12345':
                 data = usageResult()
-                return render_template('/index.html', usage=usageResult(), dateCnt=data[0],
-                                       causeTotal=data[1])
+                return render_template('/index.html', dateCnt=data[0], causeTotal=data[1])
             else:
                 return render_template('/login.html', LoginState="NO")
 
@@ -34,8 +33,7 @@ def loginResult():
             return 'You are not registered'
     else:
         data = usageResult()
-        return render_template('/index.html', usage=usageResult(), dateCnt=data[0],
-                               causeTotal=data[1])
+        return render_template('/index.html', dateCnt=data[0], causeTotal=data[1])
 
 def usageResult():
     dateList = []
@@ -43,7 +41,6 @@ def usageResult():
     causeTotal = [0, 0, 0, 0, 0, 0]
 
     db = pymysql.connect("52.14.78.174", "root", "peoplespace5", "md_db")
-    totalusage = [10,20,30,20,10,30]
     cursor = db.cursor()
     sql = "SELECT * FROM application"
     cursor.execute(sql)
@@ -86,7 +83,7 @@ def usageResult():
 
     print(dateCnt)
 
-    return [dateCnt,causeTotal]
+    return [dateCnt,causeTotal, dateList]
 
 
 if __name__ == '__main__':
